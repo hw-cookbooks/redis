@@ -23,3 +23,7 @@ when "package"
 when "source"
   include_recipe "redis::server_source"
 end
+
+if(node['redis']['replication']['enabled'])
+  include_recipe 'redis::_replication'
+end

@@ -68,3 +68,7 @@ default['redis']['config']['no_appendfsync_on_rewrite'] = false
 default['redis']['config']['list_max_ziplist_entries'] = 512
 default['redis']['config']['list_max_ziplist_value'] = 64
 default['redis']['config']['set_max_intset_entries'] = 512
+
+# replication
+default['redis']['replication']['enabled'] = false
+default['redis']['replication']['redis_replication_role'] = 'master' # or slave
