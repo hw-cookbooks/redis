@@ -19,6 +19,5 @@ template "#{node['redis']['conf_dir']}/redis.conf" do
   owner "root"
   group "root"
   mode 0644
-  variables node['redis']['config']
   notifies :restart, "service[redis]", :immediate
 end
