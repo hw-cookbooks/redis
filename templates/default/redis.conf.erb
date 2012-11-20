@@ -1,4 +1,4 @@
-<% node[:redis][:conf].each do |key, value| -%>
+<% node[:redis][:config].each do |key, value| -%>
 <%= ChefRedis.template_format(key, value) %>
 <% end %>
 
