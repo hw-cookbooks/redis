@@ -3,7 +3,7 @@
 # Simple Redis init.d script conceived to work on Linux systems
 # as it does use the /proc filesystem.
 
-REDISPORT=<%= node['redis']['config']['listen_port'] %>
+REDISPORT=<%= node['redis']['config']['port'] %>
 EXEC=<%= node['redis']['dst_dir'] %>/bin/redis-server
 CLIEXEC=<%= node['redis']['dst_dir'] %>/bin/redis-cli
 
