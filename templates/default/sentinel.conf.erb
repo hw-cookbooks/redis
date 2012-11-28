@@ -1,0 +1,12 @@
+<% node[:redis][:sentinel][:config].each do |key, value| -%>
+  <% next if value.nil? -%>
+<%= ChefRedis.template_format(key, value) %>
+<% end %>
+<% unless node[:redis][:sentinel][:mon_config].nil? -%>
+  <% node[:redis][:sentinel][:mon_config].each do |master_name, options| -%>
+    <% options.each do |key, value| -%>
+      <% next if value.nil? -%>
+<%= ChefRedis.template_format("sentinel #{key} #{master_name}", value) %>
+    <% end -%>
+  <% end -%>
+<% end -%>
