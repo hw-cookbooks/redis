@@ -32,43 +32,6 @@ default['redis']['init_style'] = "init"
 default['redis']['user'] = "redis"
 default['redis']['group'] = "redis"
 
-# configuration
-default['redis']['config']['appendonly'] = false
-default['redis']['config']['appendfsync'] = "everysec"
-default['redis']['config']['daemonize'] = true
-default['redis']['config']['databases'] = 16
-default['redis']['config']['dbfilename'] = "dump.rdb"
-default['redis']['config']['dir'] = "/var/lib/redis"
-default['redis']['config']['bind'] = "127.0.0.1"
-default['redis']['config']['port'] = 6379
-default['redis']['config']['logfile'] = "stdout"
-default['redis']['config']['loglevel'] = "warning"
-default['redis']['config']['pidfile'] = "/var/run/redis/redis-server.pid"
-default['redis']['config']['rdbcompression'] = true
-default['redis']['config']['timeout'] = 300
-default['redis']['config']['vm_enabled'] = false
-default['redis']['config']['vm_max_memory'] = 0
-default['redis']['config']['vm_max_threads'] = 4
-default['redis']['config']['vm_page_size'] = 32
-default['redis']['config']['vm_pages'] = 134217728
-default['redis']['config']['vm_swap_file'] = "/var/lib/redis/redis.swap"
-default['redis']['config']['save'] = ['900 1', '300 10', '60 10000']
-default['redis']['config']['hash_max_zipmap_entries'] = 64
-default['redis']['config']['hash_max_zipmap_value'] = 512
-default['redis']['config']['activerehashing'] = true
-
-###
-## the following configuration settings may only work with a recent redis release
-###
-# TODO: Move these into recipe and set based on version available
-default['redis']['config']['slowlog_log_slower_than'] = 10000
-default['redis']['config']['slowlog_max_len'] = 1024
-default['redis']['config']['maxmemory_samples'] = 3
-default['redis']['config']['no_appendfsync_on_rewrite'] = false
-default['redis']['config']['list_max_ziplist_entries'] = 512
-default['redis']['config']['list_max_ziplist_value'] = 64
-default['redis']['config']['set_max_intset_entries'] = 512
-
 # replication
 default['redis']['replication']['enabled'] = false
 default['redis']['replication']['redis_replication_role'] = 'master' # or slave
