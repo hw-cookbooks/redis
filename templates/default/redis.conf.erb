@@ -1,4 +1,5 @@
 <% node[:redis][:config].each do |key, value| -%>
+  <% next if value.nil? -%>
 <%= ChefRedis.template_format(key, value) %>
 <% end %>
 
