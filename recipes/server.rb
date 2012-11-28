@@ -24,16 +24,6 @@ when "source"
   include_recipe "redis::server_source"
 end
 
-ruby_block 'store redis installation version' do
-  block do
-    node.normal['redis']['installed_version'] = %x{
-      redis-server --version
-    }.split(' ').detect{|v|
-      !v.scan(/\d+\.\d+\.\d+/).empty?
-    }
-  end
-end
-
 if(node['redis']['replication']['enabled'])
   include_recipe 'redis::_replication'
 end
