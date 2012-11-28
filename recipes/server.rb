@@ -25,5 +25,5 @@ when "source"
 end
 
 if(node['redis']['replication']['enabled'])
-  include_recipe 'redis::_replication'
+  include_recipe 'redis::replication'
 end
