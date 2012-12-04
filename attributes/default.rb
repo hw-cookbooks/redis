@@ -35,3 +35,5 @@ default['redis']['group'] = "redis"
 # replication
 default['redis']['replication']['enabled'] = false
 default['redis']['replication']['redis_replication_role'] = 'master' # or slave
+default['redis']['replication']['tunnel']['enabled'] = true
+default['redis']['replication']['tunnel']['accept_port'] = 46379
