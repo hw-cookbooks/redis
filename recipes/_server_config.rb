@@ -25,6 +25,15 @@ unless(node['redis']['config']['logfile'] == 'stdout')
   end
 end
 
+if(node['redis']['config']['pidfile'])
+  directory File.dirname(node['redis']['config']['pidfile']) do
+    owner node['redis']['user']
+    group node['redis']['group']
+    recursive true
+    mode 0755
+  end
+end
+
 template "#{node['redis']['conf_dir']}/redis.conf" do
   source "redis.conf.erb"
   owner "root"
