@@ -6,7 +6,7 @@ REDISPORT="<%= node['redis']['sentinel']['port'] %>"
 EXEC="<%= node['redis']['dst_dir'] %>/bin/redis-server"
 CLIEXEC=<%= node['redis']['dst_dir'] %>/bin/redis-cli
 
-PIDFILE=<%= node['redis']['sentinel']['pidfile'] %>
+PIDFILE=<%= node['redis']['sentinel']['config']['pidfile'] %>
 CONF="<%= node['redis']['conf_dir'] %>/sentinel.conf"
 
 case "$1" in
@@ -26,7 +26,7 @@ case "$1" in
         else
                 PID=$(cat $PIDFILE)
                 echo "Stopping ..."
-                $CLIEXEC -p $REDISPORT shutdown
+                kill $PID 
                 while [ -x /proc/${PID} ]
                 do
                     echo "Waiting for Redis sentinel to shutdown ..."
