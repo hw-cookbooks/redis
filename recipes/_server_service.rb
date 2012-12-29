@@ -2,13 +2,17 @@
 # Cookbook Name:: redis
 # Recipe:: _server_service
 
-redis_service = case node['platform_family']
-when "debian"
-  "redis-server"
-when "rhel", "fedora"
-  "redis"
+if(node.run_state[:seen_recipes].keys.include?('redis::server_source'))
+  redis_service = 'redis-server'
 else
-  "redis"
+  redis_service = case node['platform_family']
+  when "debian"
+    "redis-server"
+  when "rhel", "fedora"
+    "redis"
+  else
+    "redis"
+  end
 end
 
 service "redis" do
