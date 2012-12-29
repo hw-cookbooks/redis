@@ -18,11 +18,16 @@ recipe "redis::default", "The default recipe executes the redis::server_package 
 recipe "redis::server", "The default recipe executes the redis::server_package recipe. This recipe is here for compatibility with other community Redis cookbooks."
 recipe "redis::server_package", "Uses the recipe crumbs in the Redis cookbook to manage a packaged Redis instance."
 recipe "redis::server_source", "Uses the recipe crumbs in the Redis cookbook to manage a source compiled Redis instance."
+recipe "redis::replication", "Configure master and slave nodes for replication"
+recipe "redis::sentinel", "Setup sentinel for monitoring cluster"
 
 %w[ ubuntu centos ].each do |os|
   supports os
 end
 
-%w[ build-essential runit yum stunnel ].each do |cookbook|
+%w[ build-essential runit yum ].each do |cookbook|
   depends cookbook
 end
+
+depends 'stunnel', '>= 2.0.0'
+depends 'discovery', '>= 0.2.0'
