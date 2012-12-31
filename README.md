@@ -29,49 +29,70 @@ The Redis cookbook has been tested on Ubuntu 10.04, 11.04, 11.10, 12.04, Debian 
 
 ## Configuration:
 
-The config file template should support all current configuration options. If we've missed something please file a ticket.
+The configuration file is dynamically built from the config hash. Keys are
+used as the configuration name, and values used for their values. In cases
+where a configuration name may be used multiple times, the multiple values
+can be stored in an array value to generate the proper configuration. Since
+valid configuration values change depending on version, the the `_server_config_defaults`
+recipe is used to set defaults based on version installed.
 
-* `['redis']['config']['appendonly']` - Use the AOF file writing system.
-* `['redis']['config']['appendfsync']` - The mode Redis uses for fsync() calls. [ everysec, no, always ]
-* `['redis']['config']['daemonize']` - Run Redis as a daemon. In this mode Redis _will_ create a pid file.
-* `['redis']['config']['databases']` - Set the number of Redis databases.
-* `['redis']['config']['dbfilename']` - The filename where the database is dumped.
-* `['redis']['config']['dir']` - The directory where Redis will store its DB and AOF files.
-* `['redis']['config']['listen_addr']` - Address to listen on. Defaults to localhost.
-* `['redis']['config']['listen_port']` - Port to listen on.
-* `['redis']['config']['logfile']` - The Redis logfile.
-* `['redis']['config']['loglevel']` - Changes logging verbosity. [debug, verbose, notice, warning ]
-* `['redis']['config']['pidfile']` - When daemonize is enabled this configures where Redis will write the pid file.
-* `['redis']['config']['rdbcompression']` - Whether or not to use LZF compression when dumping .rdb databases. [ yes, no ]
-* `['redis']['config']['timeout']` - Configures when Redis will timeout a idle client connection.
-* `['redis']['config']['vm']['enabled']`- Use Redis' virtual memory.
-* `['redis']['config']['vm']['max_memory']` - Limits the amount of memory available to Redis.
-* `['redis']['config']['vm']['max_threads']` - Maximum number of VM I/O threads running simultaneously.
-* `['redis']['config']['vm']['page_size']` - Configures the page size Redis uses when writing out swap files.
-* `['redis']['config']['vm']['pages']` - The total number of memory pages in a swap file.
-* `['redis']['config']['vm']['vm_swap_file']` - The Redis swapfile.
+* Config reference: https://github.com/antirez/redis/blob/unstable/redis.conf
 
-** The following configuration settings are only available in redis >= 2.1.12 -- http://redis.io/commands/slowlog **
+## Replication
 
-* `['redis']['config']['configure_slowlog']` - Adds or Removes slowlog options from your redis.conf [ true, nil ]
-* `['redis']['config']['slowlog_log_slower_than']` - Time in microseconds a command must run beyond to be caught by the slow logger.
-* `['redis']['config']['slowlog_max_len']` - The length of the slow log.
+Replication can be enabled by adding the `replication` recipe to the run list and
+specifying the node's role. For the master node:
 
-** The following configuration settings are only available in newer versions of Redis. Exact version is not known, other than
-   these will fail on the Redis 1.2.x distro package included with older Ubuntu and Debian 6.
+```ruby
+name 'redis_master'
+run_list('role[redis]', 'recipe[redis::replication]')
+override_attributes(
+  :redis => {
+    :replication => {
+      :enabled => true,
+      :redis_replication_role => 'master'
+    }
+  }
+)
+```
+and for the slave:
+```ruby
+name 'redis_slave'
+run_list('role[redis]', 'recipe[redis::replication]')
+override_attributes(
+  :redis => {
+    :replication => {
+      :enabled => true,
+      :redis_replication_role => 'slave'
+    }
+  }
+)
+```
+Since there may be times where replication is happening outside of a secure network,
+an SSL tunnel can be setup for replication:
+```ruby
+name 'redis_replication'
+run_list('role[redis]', 'recipe[redis::replication]')
+override_attributes(
+  :redis => {
+    :replication => {
+      :enabled => true,
+      :tunnel => {
+        :enabled => true
+      }
+    }
+  }
+)
+```
+## Sentinel
+Sentinel support can be enabled to allow for automatic failover. It is builtin to
+Redis and available in 2.6. It requires replication to be enabled and is not
+compatible with tunneled replication, so should be used within a secure environment.
+To enable sentinel, simply add it to the run list:
 
-* `default['redis']['config']['configure_maxmemory_samples']` - Adds or removes maxmemory-samples options from your redis.conf [ true, nil ]
-* `default['redis']['config']['maxmemory_samples']` - Number of keys redis will sample when checking the LRU for keys to evict.
-
-* `default['redis']['config']['configure_no_appendfsync_on_rewrite']` - Adds or removes no-appendfsync-on-rewrite options from your redis.conf [ true, nil ]
-* `default['redis']['config']['no_appendfsync_on_rewrite']` - [ yes, no ]
-
-* `default['redis']['config']['configure_list_max_ziplist']` - Adds or removes list-max-ziplist-* options from your redis.conf [ true, nil ]
-* `default['redis']['config']['list_max_ziplist_entries']` - Encode small lists in a special way if they are under this limit
-* `default['redis']['config']['list_max_ziplist_value']` - Encode small lists in a special way if they are under this limit
-
-* `default['redis']['config']['configure_set_max_intset_entries']` - Adds or removes set-max-intset-entries options from your redis.conf [ true, nil ]
-* `default['redis']['config']['set_max_intset_entries']` - Use special encoding of sets of strings if the set is smaller than this limit
+```ruby
+run_list('role[redis]', 'recipe[redis::sentinel]')
+```
 
 # USAGE:
 
@@ -89,6 +110,8 @@ There are several recipes broken up into reusable pieces. For ease of use, we've
 * `redis::server` - The default recipe executes the redis::server_package recipe. This recipe is here for compatibility with other community Redis cookbooks.
 * `redis::server_package` - Uses the recipe crumbs in the Redis cookbook to manage a packaged Redis instance.
 * `redis::server_source` - Uses the recipe crumbs in the Redis cookbook to manage a source compiled Redis instance.
+* `redis::replication` - Configure master and slave nodes for replication
+* `redis::sentinel` - Setup sentinel for monitoring cluster
 
 # CONTRIBUTE:
 
