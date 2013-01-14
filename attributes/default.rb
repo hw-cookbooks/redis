@@ -20,6 +20,7 @@
 
 # installation
 default['redis']['install_type'] = "package"
+default['redis']['package_name'] = "redis-server"
 default['redis']['source']['sha'] = "ac420c9f01f5e1d4e977401936f8da81d2401e65c03de2e0ca11eba1cc71c874"
 default['redis']['source']['url'] = "http://redis.googlecode.com/files"
 default['redis']['source']['version'] = "2.4.9"

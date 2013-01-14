@@ -4,15 +4,14 @@
 
 case node['platform_family']
 when "debian"
-  pkg = "redis-server"
+  node.default['redis']['package_name'] = "redis-server"
 when "rhel", "fedora"
   include_recipe "yum::epel"
-  pkg = "redis"
+  node.default['redis']['package_name'] = "redis"
 else
-  pkg = "redis"
+  node.default['redis']['package_name'] = "redis"
 end
 
-package "redis" do
-  package_name pkg
-  action :install
+Array(node['redis']['package_name']).each do |r_pkg|
+  package r_pkg
 end
