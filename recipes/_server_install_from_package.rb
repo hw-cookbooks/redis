@@ -13,5 +13,7 @@ else
 end
 
 Array(node['redis']['package_name']).each do |r_pkg|
-  package r_pkg
+  package r_pkg do
+    notifies :create, 'ruby_block[store redis installation version]', :delayed
+  end
 end
