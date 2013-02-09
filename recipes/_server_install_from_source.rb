@@ -45,5 +45,6 @@ remote_file "#{Chef::Config['file_cache_path']}/#{redis_source_tarball}" do
   mode 0644
   checksum node['redis']['source']['sha']
   notifies :run, "execute[redis-extract-source]", :immediately
-  notifies :create, 'ruby_block[store redis installation version]', :delayed
 end
+
+node.set['redis']['exec'] = File.join(node['redis']['dst_dir'], 'bin/redis-server')
